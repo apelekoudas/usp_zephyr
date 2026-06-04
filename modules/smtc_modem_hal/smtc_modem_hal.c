@@ -46,9 +46,22 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/logging/log_ctrl.h>
 #include <zephyr/usp/lora_lbm_transceiver.h>
+#include <zephyr/drivers/gpio.h>
 
 #include <smtc_modem_hal.h>
 #include <zephyr/lorawan_lbm/lorawan_hal_init.h>
+#include <zephyr/dt-bindings/gpio/nordic-nrf-gpio.h>
+
+#if DT_NODE_HAS_PROP(DT_CHOSEN(zephyr_lorawan_transceiver), antenna_enable_gpios)
+    static const struct gpio_dt_spec antsw = GPIO_DT_SPEC_GET(DT_CHOSEN(zephyr_lorawan_transceiver), antenna_enable_gpios);  
+#endif
+#if DT_NODE_HAS_PROP(DT_CHOSEN(zephyr_lorawan_transceiver), tx_enable_gpios)
+    static const struct gpio_dt_spec anttx = GPIO_DT_SPEC_GET(DT_CHOSEN(zephyr_lorawan_transceiver), tx_enable_gpios);  
+#endif
+// #if DT_NODE_HAS_PROP(DT_CHOSEN(zephyr_lorawan_transceiver), rx_enable_gpios)
+//     static const struct gpio_dt_spec antrx = GPIO_DT_SPEC_GET(DT_CHOSEN(zephyr_lorawan_transceiver), rx_enable_gpios);  
+// #endif
+
 
 #if defined( CONFIG_USP )
 #include <smtc_rac_api.h>
@@ -365,6 +378,28 @@ void smtc_modem_hal_set_ant_switch( bool is_tx_on )
 {
     /* NOTE: We only support antenna switches managed by the transceiver.
      */
+    // TP added
+    #if DT_NODE_HAS_PROP(DT_CHOSEN(zephyr_lorawan_transceiver), antenna_enable_gpios)
+        LOG_DBG("smtc_modem_hal_set_ant_switch: %d", is_tx_on);
+        if(!device_is_ready(antsw.port)) return;
+        gpio_pin_configure_dt(&antsw, is_tx_on ? GPIO_OUTPUT_ACTIVE : GPIO_OUTPUT_INACTIVE /*| NRF_GPIO_DRIVE_S0H1*/);        
+        // gpio_pin_set_dt(&antsw, is_tx_on); 
+    #endif
+
+    #if DT_NODE_HAS_PROP(DT_CHOSEN(zephyr_lorawan_transceiver), tx_enable_gpios)
+        LOG_DBG("smtc_modem_hal_set_tx_switch: %d", is_tx_on);
+        if(!device_is_ready(anttx.port)) return;
+        gpio_pin_configure_dt(&anttx, is_tx_on ? GPIO_OUTPUT_ACTIVE : GPIO_OUTPUT_INACTIVE /*| NRF_GPIO_DRIVE_S0H1*/);        
+        // gpio_pin_set_dt(&antsw, is_tx_on); 
+    #endif
+
+    // #if DT_NODE_HAS_PROP(DT_CHOSEN(zephyr_lorawan_transceiver), rx_enable_gpios)
+    //     LOG_DBG("smtc_modem_hal_set_rx_switch: %d", is_tx_on);
+    //     if(!device_is_ready(antrx.port)) return;
+    //     gpio_pin_configure_dt(&antrx, (!is_tx_on) ? GPIO_OUTPUT_ACTIVE : GPIO_OUTPUT_INACTIVE /*| NRF_GPIO_DRIVE_S0H1*/);        
+    //     // gpio_pin_set_dt(&antsw, is_tx_on); 
+    // #endif    
+
 }
 
 /* ------------ Environment management ------------ */

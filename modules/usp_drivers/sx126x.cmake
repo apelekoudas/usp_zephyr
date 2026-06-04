@@ -18,7 +18,7 @@ zephyr_include_directories(${LBM_SX126X_LIB_DIR})
 #-----------------------------------------------------------------------------
 # Radio specific sources
 #-----------------------------------------------------------------------------
-set(SX126X_ENABLE_LR_FHSS true)
+set(SX126X_ENABLE_LR_FHSS false)
 set(LR_FHSS_SRC_PATH ${LBM_SX126X_LIB_DIR} CACHE PATH "Path to folder containing LR-FHSS driver")
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/dev_env.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/dev_env.cmake")

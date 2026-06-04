@@ -62,6 +62,11 @@ properties:
       When enabled, DIO3 supplies power to a TCXO when needed. Its voltage is
       controlled by tcxo-voltage.
       Note that this conflicts with dio3-gpios.
+      
+  antenna-enable-gpios: 
+    type: phandle-array
+    description: |
+      GPIO to control module's antenna enable rf switch.
 
   tcxo-voltage:
     type: int

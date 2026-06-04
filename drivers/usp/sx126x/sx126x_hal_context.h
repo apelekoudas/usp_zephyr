@@ -53,12 +53,10 @@ struct sx126x_hal_context_tcxo_cfg_t
     uint32_t                    wakeup_time_ms;
 };
 
-typedef struct sx126x_pa_pwr_cfg_s
-{
-    int8_t  power;
-    uint8_t pa_duty_cycle;
-    uint8_t pa_hp_sel;
-} sx126x_pa_pwr_cfg_t;
+enum sx126x_hal_context_rfo_cfg_t {
+	RFO_LP,
+	RFO_HP,
+};
 
 struct sx126x_hal_context_cfg_t
 {
@@ -80,7 +78,8 @@ struct sx126x_hal_context_cfg_t
     int8_t           tx_power_offset_db; /* Board TX power offset */
     bool             rx_boosted;         /* RXBoosted option */
 
-    sx126x_ramp_time_t pa_ramp_time; /* PA ramp time */
+    sx126x_ramp_time_t pa_ramp_time;     /* PA ramp time */
+    enum sx126x_hal_context_rfo_cfg_t  pa_hp_sel;        /* PA output select */
 };
 
 /* This type holds the current sleep status of the radio */

@@ -69,46 +69,45 @@ void ral_sx126x_bsp_get_tx_cfg( const void* context, const ral_sx126x_bsp_tx_cfg
     /* reserved value, same for sx1261 sx1262 and sx1268 */
     output_params->pa_cfg.pa_lut = 0x01;
 
-#if defined( SX1262 ) || defined( SX1268 )
-    /* Clamp power if needed */
-    power = CLAMP( power, -9, 22 );
+    if ((config->pa_hp_sel == RFO_HP) || IS_ENABLED( SX1262 ) || IS_ENABLED( SX1268 )) {
+        /* Clamp power if needed */
+        power = CLAMP( power, -9, 22 );
 
-    output_params->pa_cfg.device_sel                 = 0x00; /* select SX1262/SX1268 device */
-    output_params->pa_cfg.hp_max                     = 0x07; /* to achieve 22dBm */
-    output_params->pa_cfg.pa_duty_cycle              = 0x04;
-    output_params->chip_output_pwr_in_dbm_configured = ( int8_t ) power;
-    output_params->chip_output_pwr_in_dbm_expected   = ( int8_t ) power;
-#else
-    /* Clamp power if needed */
-    power = CLAMP( power, -17, 15 );
-
-    /* config pa according to power */
-    if( power == 15 )
-    {
-        output_params->pa_cfg.device_sel                 = 0x01; /* select SX1261 device */
-        output_params->pa_cfg.hp_max                     = 0x00; /* not used on sx1261 */
-        output_params->pa_cfg.pa_duty_cycle              = 0x06;
-        output_params->chip_output_pwr_in_dbm_configured = 14;
-        output_params->chip_output_pwr_in_dbm_expected   = 15;
-    }
-    else if( power == 14 )
-    {
-        output_params->pa_cfg.device_sel                 = 0x01; /* select SX1261 device */
-        output_params->pa_cfg.hp_max                     = 0x00; /* not used on sx1261 */
-        output_params->pa_cfg.pa_duty_cycle              = 0x04;
-        output_params->chip_output_pwr_in_dbm_configured = 14;
-        output_params->chip_output_pwr_in_dbm_expected   = 14;
-    }
-    else
-    {
-        output_params->pa_cfg.device_sel                 = 0x01; /* select SX1261 device */
-        output_params->pa_cfg.hp_max                     = 0x00; /* not used on sx1261 */
+        output_params->pa_cfg.device_sel                 = 0x00; /* select SX1262/SX1268 device */
+        output_params->pa_cfg.hp_max                     = 0x07; /* to achieve 22dBm */
         output_params->pa_cfg.pa_duty_cycle              = 0x04;
         output_params->chip_output_pwr_in_dbm_configured = ( int8_t ) power;
         output_params->chip_output_pwr_in_dbm_expected   = ( int8_t ) power;
-    }
+    } else {
+        /* Clamp power if needed */
+        power = CLAMP( power, -17, 15 );
 
-#endif
+        /* config pa according to power */
+        if( power == 15 )
+        {
+            output_params->pa_cfg.device_sel                 = 0x01; /* select SX1261 device */
+            output_params->pa_cfg.hp_max                     = 0x00; /* not used on sx1261 */
+            output_params->pa_cfg.pa_duty_cycle              = 0x06;
+            output_params->chip_output_pwr_in_dbm_configured = 14;
+            output_params->chip_output_pwr_in_dbm_expected   = 15;
+        }
+        else if( power == 14 )
+        {
+            output_params->pa_cfg.device_sel                 = 0x01; /* select SX1261 device */
+            output_params->pa_cfg.hp_max                     = 0x00; /* not used on sx1261 */
+            output_params->pa_cfg.pa_duty_cycle              = 0x04;
+            output_params->chip_output_pwr_in_dbm_configured = 14;
+            output_params->chip_output_pwr_in_dbm_expected   = 14;
+        }
+        else
+        {
+            output_params->pa_cfg.device_sel                 = 0x01; /* select SX1261 device */
+            output_params->pa_cfg.hp_max                     = 0x00; /* not used on sx1261 */
+            output_params->pa_cfg.pa_duty_cycle              = 0x04;
+            output_params->chip_output_pwr_in_dbm_configured = ( int8_t ) power;
+            output_params->chip_output_pwr_in_dbm_expected   = ( int8_t ) power;
+        }
+    }
 }
 
 void ral_sx126x_bsp_get_xosc_cfg( const void* context, ral_xosc_cfg_t* xosc_cfg,

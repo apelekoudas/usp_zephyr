@@ -29,8 +29,17 @@ if(CONFIG_SEMTECH_LR20XX)
   )
 endif()
 
-if(CONFIG_SEMTECH_SX126X)
+if(CONFIG_SEMTECH_SX126X AND (NOT(CONFIG_SOC_SERIES_STM32WLX)))
+  ADD_DEFINITIONS(-DSX1262=1)
   zephyr_library_sources(sx126x/sx126x_hal.c sx126x/sx126x_board.c)
+
+  zephyr_library_sources_ifdef(CONFIG_LORA_BASICS_MODEM_DRIVERS_RAL_RALF
+    sx126x/sx126x_ral_bsp.c
+  )
+endif()
+
+if(CONFIG_SEMTECH_SX126X AND CONFIG_SOC_SERIES_STM32WLX)
+  zephyr_library_sources(sx126x/sx126x_hal_e5.c sx126x/sx126x_board_e5.c)
 
   zephyr_library_sources_ifdef(CONFIG_LORA_BASICS_MODEM_DRIVERS_RAL_RALF
     sx126x/sx126x_ral_bsp.c

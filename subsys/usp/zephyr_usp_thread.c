@@ -136,7 +136,7 @@ static void usp_main_thread( void* p1, void* p2, void* p3 )
 #if CONFIG_USP_MAIN_THREAD_MAX_SLEEP_MS
         sleep_time_ms = MIN( sleep_time_ms, CONFIG_USP_MAIN_THREAD_MAX_SLEEP_MS );
 #endif
-        LOG_DBG( "Sleeping for %dms", sleep_time_ms );
+        // LOG_DBG( "Sleeping for %dms", sleep_time_ms );
         smtc_modem_hal_interruptible_msleep( K_MSEC( sleep_time_ms ) );
     }
 }
